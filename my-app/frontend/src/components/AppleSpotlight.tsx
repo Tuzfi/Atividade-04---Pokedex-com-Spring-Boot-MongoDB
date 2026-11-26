@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Search, X, Sparkles, Award, Swords, Sun, Moon } from 'lucide-react'
+import { Search, X, Sparkles, Award, Swords, Sun, Moon, Plus } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { Filters, type FiltersProps } from './Filters'
 import type { Theme } from '../hooks/useTheme'
@@ -11,6 +11,7 @@ export interface AppleSpotlightProps extends FiltersProps {
   onRandomSelect?: () => void
   onOpenTrainers?: () => void
   onOpenCompare?: () => void
+  onOpenCreate?: () => void
   theme?: Theme
   onToggleTheme?: () => void
 }
@@ -21,6 +22,7 @@ export function AppleSpotlight({
   onRandomSelect,
   onOpenTrainers,
   onOpenCompare,
+  onOpenCreate,
   theme = 'light',
   onToggleTheme,
   selectedType,
@@ -89,6 +91,19 @@ export function AppleSpotlight({
           )}
 
           <div className="flex items-center gap-1.5 shrink-0">
+            {onOpenCreate && (
+              <button
+                type="button"
+                onClick={onOpenCreate}
+                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-100/90 dark:bg-slate-800 hover:bg-slate-200/80 dark:hover:bg-slate-700 active:scale-95 text-xs font-semibold text-slate-700 dark:text-slate-300 border border-slate-200/70 dark:border-slate-700 transition shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 cursor-pointer"
+                title="Cadastrar um novo Pokémon"
+                aria-label="Cadastrar novo Pokémon"
+              >
+                <Plus className="w-3.5 h-3.5 text-emerald-600 shrink-0" aria-hidden="true" />
+                <span className="hidden sm:inline">Novo</span>
+              </button>
+            )}
+
             {onOpenTrainers && (
               <button
                 type="button"

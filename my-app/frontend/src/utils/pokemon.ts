@@ -4,7 +4,15 @@ export function formatPokemonId(id: number): string {
   return `#${id.toString().padStart(3, '0')}`
 }
 
+export const MAX_ORIGINAL_POKEMON_ID = 151
+
+const POKEMON_PLACEHOLDER_IMAGE =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='44' fill='%23fff' stroke='%231e293b' stroke-width='6'/%3E%3Cpath d='M6 50a44 44 0 0 1 88 0z' fill='%23ef4444' stroke='%231e293b' stroke-width='6'/%3E%3Ccircle cx='50' cy='50' r='13' fill='%23fff' stroke='%231e293b' stroke-width='6'/%3E%3C/svg%3E"
+
 export function getPokemonArtworkUrl(id: number): string {
+  if (id > MAX_ORIGINAL_POKEMON_ID) {
+    return POKEMON_PLACEHOLDER_IMAGE
+  }
   return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
 }
 

@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { X, Award, Search, Users } from 'lucide-react'
-import pokedexData from '../data/pokedex-data.json'
+import { listarTreinadores } from '../services/api'
 import type { Pokemon, Trainer } from '../types/pokemon'
 import {
   formatPokemonId,
@@ -11,15 +11,36 @@ import {
 import { cn } from '../lib/utils'
 
 export interface TrainersModalProps {
+  allPokemon: Pokemon[]
   onClose: () => void
   onSelectPokemon: (pokemon: Pokemon) => void
 }
 
-export function TrainersModal({ onClose, onSelectPokemon }: TrainersModalProps) {
+export function TrainersModal({ allPokemon, onClose, onSelectPokemon }: TrainersModalProps) {
   const [searchTerm, setSearchTerm] = useState('')
 
-  const trainers: Trainer[] = pokedexData.trainers
-  const allPokemon: Pokemon[] = pokedexData.pokemon
+  const [trainers, setTrainers] = useState<Trainer[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let ativo = true
+
+    listarTreinadores()
+      .then((dados) => {
+        if (ativo) setTrainers(dados)
+      })
+      .catch((erro: Error) => {
+        if (ativo) setLoadError(erro.message)
+      })
+      .finally(() => {
+        if (ativo) setIsLoading(false)
+      })
+
+    return () => {
+      ativo = false
+    }
+  }, [])
 
   const pokemonMap = useMemo(() => {
     return new Map<number, Pokemon>(allPokemon.map((p) => [p.id, p]))
@@ -131,7 +152,11 @@ export function TrainersModal({ onClose, onSelectPokemon }: TrainersModalProps) 
         </div>
 
         <div className="p-4 sm:p-6 overflow-y-auto space-y-4">
-          {filteredTrainers.length > 0 ? (
+          {isLoading ? (
+            <p className="text-center text-sm text-slate-500 py-12">Carregando treinadores...</p>
+          ) : loadError ? (
+            <p className="text-center text-sm text-red-600 py-12">{loadError}</p>
+          ) : filteredTrainers.length > 0 ? (
             filteredTrainers.map((trainer) => (
               <article
                 key={trainer.id}
